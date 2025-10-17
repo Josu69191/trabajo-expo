@@ -1,36 +1,30 @@
-from collections import deque
+# Representamos un grafo como un diccionario.
+# Cada clave es un nodo y su valor es una lista de los nodos conectados a él.
+grafo = {
+    'A': ['B', 'C'],   # El nodo A está conectado con B y C
+    'B': ['D', 'E'],   # El nodo B está conectado con D y E
+    'C': ['F'],        # El nodo C está conectado con F
+    'D': [],           # El nodo D no tiene conexiones
+    'E': ['F'],        # El nodo E se conecta con F
+    'F': []            # El nodo F no tiene conexiones
+}
 
-def bfs(graph, start):
-    """
-    graph: dict donde clave = vértice, valor = lista de vecinos
-    start: vértice inicial
-    Retorna: diccionario dist que da la distancia (número de aristas) desde start a cada vértice alcanzable
-    """
-    dist = {v: None for v in graph}  # None para no visitado aún
-    dist[start] = 0
-    queue = deque([start])
-    
-    while queue:
-        u = queue.popleft()
-        for v in graph[u]:
-            if dist[v] is None:  # no ha sido visitado
-                dist[v] = dist[u] + 1
-                queue.append(v)
-    return dist
+# Función para realizar un recorrido en anchura (BFS - Breadth-First Search)
+def bfs(grafo, inicio):
+    visitados = []       # Lista donde guardaremos los nodos visitados
+    cola = [inicio]      # Cola (lista) donde se agregan los nodos por visitar
 
-# Ejemplo de uso:
-if __name__ == "__main__":
-    # Grafo de ejemplo (no dirigido)
-    graph = {
-        'A': ['B', 'C'],
-        'B': ['A', 'D', 'E'],
-        'C': ['A', 'F'],
-        'D': ['B'],
-        'E': ['B', 'F'],
-        'F': ['C', 'E']
-    }
-    inicio = 'A'
-    distancias = bfs(graph, inicio)
-    print(f"Distancias desde {inicio}:")
-    for v, d in distancias.items():
-        print(f"  {v}: {d}")
+    while cola:  # Mientras haya elementos en la cola
+        nodo = cola.pop(0)  # Sacamos el primer nodo (FIFO: primero en entrar, primero en salir)
+
+        if nodo not in visitados:  # Si aún no lo hemos visitado
+            visitados.append(nodo)  # Lo agregamos a la lista de visitados
+            vecinos = grafo[nodo]   # Obtenemos los vecinos (nodos conectados)
+            cola.extend(vecinos)    # Los agregamos a la cola para visitarlos después
+
+    return visitados  # Retornamos el orden en que visitamos los nodos
+
+# Probamos la función BFS empezando desde el nodo 'A'
+resultado = bfs(grafo, 'A')
+print("Recorrido BFS desde A:", resultado)
+
